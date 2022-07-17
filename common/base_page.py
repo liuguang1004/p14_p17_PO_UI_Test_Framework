@@ -1,6 +1,6 @@
 # encoding: utf-8
 # @author: newdream_daliu
-# @file: basc_page.py
+# @file: base_page.py
 # @time: 2022-07-10 14:44
 # @desc:页面基础类
 import time
@@ -11,10 +11,10 @@ from common.log_utils import logger
 
 
 
-class BascPage(object):
+class BasePage(object):
     def __init__(self,driver):
-        self.driver=driver
-        # self.driver=webdriver.Chrome()
+        # self.driver=driver
+        self.driver=webdriver.Chrome()
 
     def open_url(self,url):
         self.driver.get(url)
@@ -100,3 +100,70 @@ class BascPage(object):
         element=self.find_element(element_info)
         element.send_keys(content)
         logger.info('[{}] 中输入{}'.format(element_info['element_name'],content))
+
+    #切框架 ：思路1   通过元素识别数据字典，获取元素再切
+    # def switch_to_frame_by_element(self,element_info):
+    #     element=self.driver.find_element(element_info)
+    #     self.driver.switch_to.frame(element)
+    #
+    # # 切框架 ：思路2   使用id或者name切
+    # def switch_to_frame_id_or_name(self,id_or_name):
+    #     self.driver.switch_to.frame(id_or_name)
+
+    # 切框架 ：思路3   把前面二种思路整合，封装成一个统一的方法
+    #  element_info={},id=frame_id,name=frame_name
+    def switch_to_frame(self,**element_dict):
+        if 'id' in element_dict.keys():
+            self.driver.switch_to.frame(element_dict['id'])
+        elif 'name' in element_dict.keys():
+            self.driver.switch_to.frame(element_dict['name'])
+        elif  'element_info' in element_dict.keys():
+            element=self.driver.find_element(element_dict['element_info'])
+            self.driver.switch_to.frame(element)
+
+    #执行js封装：
+    #删除属性
+    # time.sleep(2)
+    # js = 'arguments[0].removeAttribute("name");'
+    # el = driver.find_element_by_id('kw')
+    # driver.execute_script(js, el)
+    # time.sleep(2)
+
+    #改变属性
+    # time.sleep(2)
+    # el= driver.find_element_by_id('kw')
+    # driver.execute_script('arguments[0].setAttribute("name","newdream");',el)
+
+    #滚动条
+    # def scroll(driver, heigh):  # 把功能封装成函数，把数据分离出来，做成参数
+    #     time.sleep(2)
+    #     js = 'window.scrollBy(0,{});'.format(heigh)  # 向下滚
+    #     driver.execute_script(js)
+    #删除元素属性的封装
+    def delete_element_attribute(self,element_info,attribute_name):
+        js = 'arguments[0].removeAttribute("%s");'%attribute_name
+        # js = 'arguments[0].removeAttribute("{}");'.format(attribute_name)
+        el = self.find_element(element_info)
+        # self.driver.execute_script(js, el)
+        self.__execute_script(js.el)
+
+    #修改元素的属性
+    def update_element_delete_element_attribute(self,element_info,attribute_name,attribute_vaule):
+        js='arguments[0].setAttribute("%s","%s");'%(attribute_name,attribute_vaule)
+        el= self.driver.find_element(element_info)
+        # self.driver.execute_script(js,el)
+        self.__execute_script(js,el)
+    #滚动条
+    def scroll(self, heigh):  # 把功能封装成函数，把数据分离出来，做成参数
+        time.sleep(2)
+        js = 'window.scrollBy(0,{});'.format(heigh)  # heigh正数向下滚，负数向上滚
+        # self.driver.execute_script(js)
+        self.__execute_script(js)
+
+    #继续封装selenium执行js的脚本   深入封装
+    def __execute_script(self,js,element=None):
+        if element:
+            self.driver.execute_script(js,element)
+        else:
+            self.driver.execute_script(js)
+

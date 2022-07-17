@@ -9,9 +9,9 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from common.log_utils import logger
-from common.basc_page import BascPage
+from common.base_page import BasePage
 
-class LoginPage(BascPage):  #一个页面一个类
+class LoginPage(BasePage):  #一个页面一个类
     def __init__(self,driver):
         super().__init__(driver)
         # #元素识别数据分离
