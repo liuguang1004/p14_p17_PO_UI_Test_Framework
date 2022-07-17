@@ -1,3 +1,4 @@
 /logs/*.log
 /webdriver/*.exe
 /.idea
+/screen_shot

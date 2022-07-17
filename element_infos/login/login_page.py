@@ -26,6 +26,10 @@ class LoginPage(BasePage):  #一个页面一个类
     def click_login(self):
         self.click(self.login_button)
 
+    #封装一个登录失败，弹出的提示框中点确认，并返回提示框中的内容
+    def get_login_fail_alert_content(self):
+         return  self.switch_to_frame()
+
 if __name__ == '__main__':
     # current_path=os.path.dirname(__file__)
     # driver_path=os.path.join(current_path,'../webdriver/chromedriver.exe')
@@ -38,4 +42,6 @@ if __name__ == '__main__':
     login_page.input_username('test01')
     login_page.input_password('newdream123')
     login_page.click_login()
+    login_page.wait(2)
+    login_page.screenshot_as_file()
 

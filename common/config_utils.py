@@ -29,6 +29,25 @@ class ConfigUtils():
         value=self.cfg.get('default','driver_name')
         return value
 
+    @property
+    def time_out(self):
+        time_out=float(self.cfg.get('default','time_out'))
+        return time_out
+
+    @property
+    def screen_shot_path(self):
+        value=self.cfg.get('default','screen_shot_path')
+        return value
+
+    @property
+    def user_name(self):
+        value = self.cfg.get('default', 'username')
+        return value
+
+    @property
+    def pass_word(self):
+        value = self.cfg.get('default', 'password')
+        return value
 
 local_config=ConfigUtils()
 
@@ -37,3 +56,7 @@ if __name__=='__main__':
     print(local_config.log_path)
     print(local_config.get_driver_path)
     print(local_config.get_driver_name)
+    print(local_config.time_out)
+    print(local_config.screen_shot_path)
+    print(local_config.user_name)
+    print(local_config.pass_word)

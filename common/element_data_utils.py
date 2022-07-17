@@ -6,6 +6,7 @@
 
 import  os
 import xlrd
+from common.config_utils import local_config
 
 current_path=os.path.dirname(__file__)
 excel_path=os.path.join(current_path,'../element_info_datas/element_info_datas2.xlsx')
@@ -28,8 +29,23 @@ class ElementDataUtils():
                 element_info['element_name']=self.sheet.cell_value(i,1)
                 element_info['locator_type']=self.sheet.cell_value(i,3)
                 element_info['locatot_value'] = self.sheet.cell_value(i, 4)
-                element_info['timeout'] = self.sheet.cell_value(i, 5)
+                timeout_value= self.sheet.cell_value(i, 5)
+                # 方法1：
+                # if timeout_value=='':
+                #     timeout_value=local_config.time_out   #如果没有设置就取config.ini里面的默认
+                # else:
+                #     timeout_value=float(timeout_value)  #如果设置就把字符串转float
 
+                # 方法1.5：
+                # if timeout_value: #如果存在，就取自己
+                #     timeout_value=float(timeout_value)    #如果没有设置就取config.ini里面的默认
+                # else:
+                #     timeout_value=local_config.time_out   #如果没有设置就取config.ini里面的默认
+                # # 方法2：
+                timeout_value = timeout_value if isinstance(timeout_value,float) else local_config.time_out
+
+
+                element_info['timeout']=timeout_value
                 element_infos[self.sheet.cell_value(i,0)]=element_info
         return  element_infos
 
