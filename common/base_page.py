@@ -15,6 +15,9 @@ from common.log_utils import logger
 from  common.config_utils import local_config
 
 class BasePage(object):
+    """
+    基本页面类
+    """
     def __init__(self,driver):
         self.driver=driver
         # self.driver=webdriver.Chrome()
@@ -69,37 +72,41 @@ class BasePage(object):
         '''
         通过元素识别的信息字典，返回一个元素
         :param element_info: 元素识别信息字典
-        :return: elemen
+        :return: element
         '''
-        locator_type_name=element_info['locator_type']
-        locator_value_info=element_info['locator_value']
-        locator_timeout=element_info['timeout']
-        if locator_type_name=='id':
-            locator_type=By.ID
-        elif locator_type_name=='xpath':
-            locator_type =By.XPATH
-        elif locator_type_name=='name':
-            locator_type=By.NAME
-        elif locator_type_name=='class':
-            locator_type=By.CLASS_NAME
-        elif locator_type_name=='css':
-            locator_type=By.CSS_SELECTOR
-        elif locator_type_name == 'linktext':
-            locator_type = By.LINK_TEXT
-        elif locator_type_name == 'plinktext':
-            locator_type = By.PARTIAL_LINK_TEXT
-        # self.driver.find_element(By.XPATH,'//li[@data-id="product"]')
-        #显示等待识别元素
-        element = WebDriverWait(self.driver,locator_timeout).\
-            until(lambda x: x.find_element(locator_type,locator_value_info))  #最核心的代码
-        return element
+        try:
+            locator_type_name=element_info['locator_type']
+            locator_value_info=element_info['locator_value']
+            locator_timeout=element_info['timeout']
+            if locator_type_name=='id':
+                locator_type=By.ID
+            elif locator_type_name=='xpath':
+                locator_type =By.XPATH
+            elif locator_type_name=='name':
+                locator_type=By.NAME
+            elif locator_type_name=='class':
+                locator_type=By.CLASS_NAME
+            elif locator_type_name=='css':
+                locator_type=By.CSS_SELECTOR
+            elif locator_type_name == 'linktext':
+                locator_type = By.LINK_TEXT
+            elif locator_type_name == 'plinktext':
+                locator_type = By.PARTIAL_LINK_TEXT
+            element = WebDriverWait(self.driver,locator_timeout).\
+                until(lambda x: x.find_element(locator_type,locator_value_info))  #最核心的代码
+            logger.info('[{}] 元素识别成功'.format(element_info['element_name']))
+            return element
+        except Exception as e:
+            logger.error('[{}] 元素不能识别成功'.format(element_info['element_name']))
+
 
     def find_element_2(self, element_info_1,element_info_2):
-        '''
-        通过元素识别的信息字典，返回一个元素
-        :param element_info: 元素识别信息字典
-        :return: elemen
-        '''
+        """
+        作用：层级定位元素
+        :param element_info_1: 父元素
+        :param element_info_2: 子元素
+        :return:  element元素
+        """
         el=self.find_element(element_info_1)
 
         locator_type_name = element_info_2['locator_type']
@@ -129,6 +136,11 @@ class BasePage(object):
     #封装元素操作方法
     #元素点击
     def click(self,element_info):
+        """
+        点击一个元素
+        :param element_info: 元素识别信息字典
+        :return:  没有
+        """
         element=self.find_element(element_info)
         element.click()
         logger.info('点击[{}]'.format(element_info['element_name']))
@@ -140,12 +152,21 @@ class BasePage(object):
         logger.info('[{}] 中输入{}'.format(element_info['element_name'],content))
 
     def get_text(self,element_info):
+        """
+        获取元素的text
+        :param element_info: 元素识别字典
+        :return: 元素的text
+        """
         element=self.find_element(element_info)
-        return  element.text
+        value=element.text
+        logger.info('获取了[{}]元素的text值：'.format(element_info['element_name'],value))
+        return  value
 
     def get_element_attribute(self,element_info,attribute_name):
         element = self.find_element(element_info)
-        return element.get_attribute(attribute_name)
+        value=element.get_attribute(attribute_name)
+        logger.info('获取了[{}]元素的{}属性值：{}'.format(element_info['element_name'], attribute_name,value))
+        return value
 
     #切框架 ：思路1   通过元素识别数据字典，获取元素再切
     # def switch_to_frame_by_element(self,element_info):
@@ -185,6 +206,7 @@ class BasePage(object):
         alert_text=alert.text
         if action=='accept':
             alert.accept()
+            logger.info('在页面提示框中点击 【确认】')
         else:
             alert.dismiss()
 

@@ -50,10 +50,10 @@ class ElementDataUtils():
         return  element_infos
 
 if __name__ == '__main__':
-    elements=ElementDataUtils('login','login_page').get_element_info()
-    print(elements)
-    elements = ElementDataUtils('login', 'add_user').get_element_info()
-    print(elements)
+    # elements=ElementDataUtils('login','login_page').get_element_info()
+    # print(elements)
+    # elements = ElementDataUtils('login', 'add_user').get_element_info()
+    # print(elements)
     elements = ElementDataUtils('main','main_page').get_element_info()
     print(elements)
 

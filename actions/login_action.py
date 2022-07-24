@@ -20,7 +20,7 @@ class LoginAction():
     #登录成功操作
     def login_success(self,username,password):
         self.login_action(username,password)
-        # return MainPage(self.login_page.driver)
+        return MainPage(self.login_page.driver)
 
     #登录失败
     def login_fail(self,username,password):
@@ -30,6 +30,7 @@ class LoginAction():
     #默认登录
     def default_login(self):
         self.login_success(local_config.user_name,local_config.pass_word)
+        return  MainPage(self.login_page.driver)
 
     #自己扩展：
     def login_by_cookie(self):

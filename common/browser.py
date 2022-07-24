@@ -8,6 +8,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from common.config_utils import local_config
+from common.log_utils import logger
 
 current_path=os.path.dirname(__file__)
 dri_path=os.path.join(current_path,'..',local_config.get_driver_path)
@@ -35,6 +36,7 @@ class Browser():
         driver_path=os.path.join(self.__driver_path,'chromedriver.exe')
         driver_server=Service(driver_path)
         driver=webdriver.Chrome(service=driver_server,options=chrome_options)
+        logger.info('初始化google浏览器并启动')
         return driver
 
 
@@ -42,12 +44,14 @@ class Browser():
         driver_path = os.path.join(self.__driver_path, 'geckodriver.exe')
         driver_server = Service(driver_path)
         driver = webdriver.Firefox(service=driver_server)
+        logger.info('初始化火狐浏览器并启动')
         return driver
 
     def __get_edge_driver(self):
         driver_path = os.path.join(self.__driver_path, 'msedgedriver.exe')
         driver_server = Service(driver_path)
         driver = webdriver.Edge(service=driver_server)
+        logger.info('初始化Edge浏览器并启动')
         return driver
 
 if __name__ == '__main__':

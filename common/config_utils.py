@@ -19,6 +19,11 @@ class ConfigUtils():
         value = self.cfg.get('default', 'log_path')
         return value
 
+    @property
+    def log_level(self):
+        value= int (self.cfg.get('default', 'log_level'))
+        return  value
+
     @property  #方法当属性用
     def get_driver_path(self):
         value=self.cfg.get('default','driver_path')
@@ -54,6 +59,7 @@ local_config=ConfigUtils()
 if __name__=='__main__':
     print(local_config.get_url)
     print(local_config.log_path)
+    print(local_config.log_level)
     print(local_config.get_driver_path)
     print(local_config.get_driver_name)
     print(local_config.time_out)
