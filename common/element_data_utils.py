@@ -28,7 +28,7 @@ class ElementDataUtils():
                 element_info={}
                 element_info['element_name']=self.sheet.cell_value(i,1)
                 element_info['locator_type']=self.sheet.cell_value(i,3)
-                element_info['locatot_value'] = self.sheet.cell_value(i, 4)
+                element_info['locator_value'] = self.sheet.cell_value(i, 4)
                 timeout_value= self.sheet.cell_value(i, 5)
                 # 方法1：
                 # if timeout_value=='':

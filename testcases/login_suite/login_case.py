@@ -27,6 +27,12 @@ class LoginCase(unittest.TestCase):
         #断言 留着下次讲,
         self.assertEqual('测试人员1','测试人员1','test人员1登录失败')
 
+    def test_login_fail_case(self):
+        login_action = LoginAction(self.base_page.driver)
+        actual=login_action.login_fail('test01','newdream')
+        print(actual)
+        self.assertEqual(actual,'登录失败，请检查您的用户名或密码是否填写正确。')
+
 if __name__ == '__main__':
     unittest.main()
 

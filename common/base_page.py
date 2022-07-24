@@ -9,10 +9,10 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.select import Select
 from common.log_utils import logger
 from  common.config_utils import local_config
-from selenium.webdriver.support import expected_conditions as EC
-
 
 class BasePage(object):
     def __init__(self,driver):
@@ -72,7 +72,7 @@ class BasePage(object):
         :return: elemen
         '''
         locator_type_name=element_info['locator_type']
-        locatot_value_info=element_info['locatot_value']
+        locator_value_info=element_info['locator_value']
         locator_timeout=element_info['timeout']
         if locator_type_name=='id':
             locator_type=By.ID
@@ -91,8 +91,41 @@ class BasePage(object):
         # self.driver.find_element(By.XPATH,'//li[@data-id="product"]')
         #显示等待识别元素
         element = WebDriverWait(self.driver,locator_timeout).\
-            until(lambda x: x.find_element(locator_type,locatot_value_info))  #最核心的代码
+            until(lambda x: x.find_element(locator_type,locator_value_info))  #最核心的代码
         return element
+
+    def find_element_2(self, element_info_1,element_info_2):
+        '''
+        通过元素识别的信息字典，返回一个元素
+        :param element_info: 元素识别信息字典
+        :return: elemen
+        '''
+        el=self.find_element(element_info_1)
+
+        locator_type_name = element_info_2['locator_type']
+        locator_value_info = element_info_2['locator_value']
+        locator_timeout = element_info_2['timeout']
+        if locator_type_name == 'id':
+            locator_type = By.ID
+        elif locator_type_name == 'xpath':
+            locator_type = By.XPATH
+        elif locator_type_name == 'name':
+            locator_type = By.NAME
+        elif locator_type_name == 'class':
+            locator_type = By.CLASS_NAME
+        elif locator_type_name == 'css':
+            locator_type = By.CSS_SELECTOR
+        elif locator_type_name == 'linktext':
+            locator_type = By.LINK_TEXT
+        elif locator_type_name == 'plinktext':
+            locator_type = By.PARTIAL_LINK_TEXT
+        # self.driver.find_element(By.XPATH,'//li[@data-id="product"]')
+        # 显示等待识别元素
+        element = WebDriverWait(el, locator_timeout). \
+            until(lambda x: x.find_element(locator_type, locator_value_info))  # 最核心的代码
+        return element
+
+
     #封装元素操作方法
     #元素点击
     def click(self,element_info):
@@ -105,6 +138,14 @@ class BasePage(object):
         element=self.find_element(element_info)
         element.send_keys(content)
         logger.info('[{}] 中输入{}'.format(element_info['element_name'],content))
+
+    def get_text(self,element_info):
+        element=self.find_element(element_info)
+        return  element.text
+
+    def get_element_attribute(self,element_info,attribute_name):
+        element = self.find_element(element_info)
+        return element.get_attribute(attribute_name)
 
     #切框架 ：思路1   通过元素识别数据字典，获取元素再切
     # def switch_to_frame_by_element(self,element_info):
@@ -180,17 +221,14 @@ class BasePage(object):
         for window_handle in window_handles:
             self.driver.switch_to.window(window_handle)
             if WebDriverWait(self.driver,local_config.time_out).until(EC.title_contains(title)):
-                break;
+                break
 
     def switch_to_window_by_url(self,url):
         window_handles = self.driver.window_handles
         for window_handle in window_handles:
             self.driver.switch_to.window(window_handle)
             if WebDriverWait(self.driver,local_config.time_out).until(EC.url_contains(url)):
-                break;
-
-
-
+                break
 
     #执行js封装：
     #删除属性
@@ -231,13 +269,23 @@ class BasePage(object):
         # self.driver.execute_script(js)
         self.__execute_script(js)
 
-    #继续封装selenium执行js的脚本   深入封装
+    #通过id，识别元素，通过attribute_name获取attribute_name
+    def get_element_attribute_by_js(self,element_info,attribute_name):
+         locator_type_name=element_info['locator_type']
+         locatot_value_info=element_info['locator_value']
+         if locator_type_name=="id":
+            js= "return document.getElementById('{}').getAttribute('{}');".format(locatot_value_info,attribute_name)
+            # print(js)
+            value = self.__execute_script(js)
+            return value
+
+    #继续封装selenium执行js的脚本   深入Attribute封装
     def __execute_script(self,js,element=None):
         if element:
-            self.driver.execute_script(js,element)
+           value = self.driver.execute_script(js,element)
         else:
-            self.driver.execute_script(js)
-
+           value =   self.driver.execute_script(js)
+        return  value
 
     #固定等待的封装
     def wait(self,s=local_config.time_out):
@@ -260,9 +308,43 @@ class BasePage(object):
         element=self.find_element(element_info)
         ActionChains(self.driver).context_click(element).perform()
 
+   #select 下拉框的封装
+    def select_input(self,element_info,**select_dice):  #index=1   value=  text='复审'
+        selectElement = self.find_element(element_info)
+        s = Select(selectElement)
+        if 'index' in select_dice.keys():
+            s.select_by_index(select_dice['index'])  # 索引定位，索引从0开始
+            self.wait(2)
+        elif 'value' in select_dice.keys():
+            self.wait(2)
+            s.select_by_value(select_dice['value'])  # value属性的值
+        elif   'text'   in select_dice.keys():
+            self.wait(2)
+            s.select_by_visible_text(select_dice['text'])  # 可见文本内容
+        else:
+            s.select_by_index(1)
 
+    # select 下拉框的封装2
+    def select_input_2(self,element_info,index=None,value=None,text=None):  #index=1    value=1  text='复审'
+        selectElement = self.find_element(element_info)
+        s = Select(selectElement)
+        if index:
+            s.select_by_index(index)  # 索引定位，索引从0开始
+            logger.info('元素[{}] 选择index={}的条目'.format(element_info['element_name'],index))
+            self.wait(2)
+        elif value:
+            self.wait(2)
+            s.select_by_value(value)  # value属性的值
+            logger.info('元素[{}] 选择value={}的条目'.format(element_info['element_name'], value))
+        elif  text:
+            self.wait(2)
+            s.select_by_visible_text(text)  # 可见文本内容
+            logger.info('元素[{}] 选择text={}的条目'.format(element_info['element_name'], text))
+        else:
+            s.select_by_index(1)  #如果没有设置下拉框，默认选择第二个选项
+            logger.info('元素[{}] 取默认值index=1的条目'.format(element_info['element_name']))
 
-    #第一次讲截图
+            #第一次讲截图
     def screenshot_as_file(self,*screenshot_path):
         #如果没有转入截图存放路径，就把截图放模块路径
         if len(screenshot_path)==0:
