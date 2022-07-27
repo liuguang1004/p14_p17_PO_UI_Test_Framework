@@ -98,6 +98,7 @@ class BasePage(object):
             return element
         except Exception as e:
             logger.error('[{}] 元素不能识别成功'.format(element_info['element_name']))
+            self.screenshot_as_file()
 
 
     def find_element_2(self, element_info_1,element_info_2):

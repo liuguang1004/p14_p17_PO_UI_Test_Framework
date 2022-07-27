@@ -3,7 +3,9 @@
 # @file: excel_utils.py
 # @time: 2022-07-24 15:29
 # @desc: 读取excel底层封装
+import os
 import xlrd
+from common.config_utils import local_config
 
 class ExcelUtils():
     def __init__(self,excel_path,sheet_name=None):
@@ -49,9 +51,13 @@ class ExcelUtils():
             all_excel_data.append(row_excel_data)
         return all_excel_data
 if __name__ == '__main__':
-    data1=ExcelUtils('F:/p14_p17_PO_UI_Test_Framework/'
-                     'element_info_datas/element_info_datas2.xlsx')
-    print(data1.get_sheet_data_by_list())
-    data2= ExcelUtils('F:/p14_p17_PO_UI_Test_Framework'
-                      '/element_info_datas/element_info_datas2.xlsx','main')
-    print(data2.get_sheet_data_by_list())
+    # data1=ExcelUtils('F:/p14_p17_PO_UI_Test_Framework/'
+    #                  'element_info_datas/element_info_datas2.xlsx')
+    # print(data1.get_sheet_data_by_list())
+    # data2= ExcelUtils('F:/p14_p17_PO_UI_Test_Framework'
+    #                   '/element_info_datas/element_info_datas2.xlsx','main')
+    # print(data2.get_sheet_data_by_list())
+    current_path=os.path.dirname(__file__)
+    test_data_path=os.path.join(current_path,'..',local_config.testdata_path)
+    sheet_infos=ExcelUtils(test_data_path,'login_suite').get_sheet_data_by_list()
+    print(sheet_infos)

@@ -54,6 +54,11 @@ class ConfigUtils():
         value = self.cfg.get('default', 'password')
         return value
 
+    @property
+    def testdata_path(self):
+        value = self.cfg.get('default', 'testdata_path')
+        return value
+
 local_config=ConfigUtils()
 
 if __name__=='__main__':
@@ -66,3 +71,4 @@ if __name__=='__main__':
     print(local_config.screen_shot_path)
     print(local_config.user_name)
     print(local_config.pass_word)
+    print(local_config.testdata_path)
