@@ -40,7 +40,7 @@ class TestDataUtils():
         return  test_data_infos
 
 if __name__ == '__main__':
-    infos=TestDataUtils('login_suite','LoginCase').convert_exceldata_to_testdata()
+    infos=TestDataUtils('qa_suite','CreateBugCase').convert_exceldata_to_testdata()
     for key in infos.keys():
         print(key,infos[key])
 

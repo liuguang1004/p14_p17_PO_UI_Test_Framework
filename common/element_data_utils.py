@@ -54,7 +54,7 @@ if __name__ == '__main__':
     # print(elements)
     # elements = ElementDataUtils('login', 'add_user').get_element_info()
     # print(elements)
-    elements = ElementDataUtils('main','main_page').get_element_info()
+    elements = ElementDataUtils('qa','create_bug_page').get_element_info()
     print(elements)
 
 

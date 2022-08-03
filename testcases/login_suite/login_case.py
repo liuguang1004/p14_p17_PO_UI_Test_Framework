@@ -43,7 +43,7 @@ class LoginCase(SeleniumBaseCase):
         login_action = LoginAction(self.base_page.driver)
         actual=login_action.login_fail(test_function_data['test_parameter'].get('username'),
                                              test_function_data['test_parameter'].get('password'))
-        self.assertEqual(actual,'登录失败，请检查您的用户名或密码是否填写正确。')
+        self.assertEqual(actual,test_function_data['expected_result'])
 
 if __name__ == '__main__':
     unittest.main()

@@ -146,6 +146,19 @@ class BasePage(object):
         element.click()
         logger.info('点击[{}]'.format(element_info['element_name']))
 
+    def double_click(self,element_info):
+        self.wait(2)
+        element = self.find_element(element_info)
+        ActionChains(self.driver).double_click(element).perform()
+        logger.info('[%s] 元素进行双击操作' % element_info['element_name'])
+
+    def clear(self,element_info):
+        """清除文本框中的内容"""
+        element=self.find_element(element_info)
+        self.wait(2)
+        element.clear()
+        logger.info('[%s] 元素进行清楚内容操作' % element_info['element_name'])
+
     #元素输入操作
     def input(self,element_info,content):  #content:内容
         element=self.find_element(element_info)
@@ -188,6 +201,11 @@ class BasePage(object):
         elif  'element_info' in element_dict.keys():
             element=self.find_element(element_dict['element_info'])
             self.driver.switch_to.frame(element)
+
+    #回到默认框架
+    def switch_to_default_frame(self):
+        self.driver.switch_to.default_content()
+
 
     #  弹出框的封装
     # def switch_to_alert(self,acton='accept',time_out=local_config.time_out):
